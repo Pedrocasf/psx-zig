@@ -4,7 +4,7 @@
  */
 
 MEMORY {
-    ram	(rwx) : ORIGIN = 0x80010000, LENGTH = 2M
+    ram	(rwx) : ORIGIN = 0x80010000, LENGTH = 2M - 64K
 }
 
 OUTPUT_FORMAT("elf32-tradlittlemips")
@@ -16,32 +16,18 @@ SECTIONS
 	. = ORIGIN(ram);
 	.text ALIGN(4) :
 	{
-		KEEP(*(.main))
+		KEEP(*(.psxmain))
 		*(.text*)
 	} >ram
-
-	.MIPS.abiflags   : { *(.MIPS.abiflags) } > ram
-  	.reginfo         : { *(.reginfo) } > ram
-
 
 	.rodata ALIGN(4) :
 	{
 		*(.rodata)
-	} >ram AT>ram
+	} >ram
 
 	.data ALIGN(4) :
 	{
 		 *(.data)
-	} >ram
-
-	.ctors ALIGN(4) :
-	{
-		*(.ctors)
-	} >ram
-
-	.dtors ALIGN(4) :
- 	{
-		*(.dtors)
 	} >ram
 
 	.bss  ALIGN(4) :
@@ -60,7 +46,6 @@ SECTIONS
 
 	__bss_start = ADDR(.bss);
 	__bss_end = ADDR(.bss) + SIZEOF(.bss);
-
 	__scratchpad = 0x1f800000;
 }
 

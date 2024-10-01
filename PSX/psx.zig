@@ -1,0 +1,1 @@
+pub const PSX = @import("core.zig").PSX;
