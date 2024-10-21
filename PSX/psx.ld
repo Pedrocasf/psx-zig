@@ -5,6 +5,7 @@
 
 MEMORY {
     ram	(rwx) : ORIGIN = 0x80010000, LENGTH = 2M - 64K
+    sram (rw) : ORIGIN = 0x1f800000, LENGTH = 1K
 }
 
 OUTPUT_FORMAT("elf32-tradlittlemips")
@@ -46,6 +47,5 @@ SECTIONS
 
 	__bss_start = ADDR(.bss);
 	__bss_end = ADDR(.bss) + SIZEOF(.bss);
-	__scratchpad = 0x1f800000;
-}
 
+}
