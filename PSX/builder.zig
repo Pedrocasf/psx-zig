@@ -16,25 +16,25 @@ const psx_target_query = blk: {
 pub fn addPSXStaticLibrary(b: *std.Build, libraryName: []const u8, sourceFile: []const u8) *std.Build.Step.Compile {
     const lib = b.addStaticLibrary(.{
         .name = libraryName,
-        .root_source_file = .{ .path = sourceFile },
+        .root_source_file = b.path(sourceFile),
         .target = b.resolveTargetQuery(psx_target_query),
         .optimize = .ReleaseFast,
     });
-    lib.setLinkerScriptPath(.{ .path = PSXLinkerScript });
+    lib.setLinkerScriptPath(b.path(PSXLinkerScript));
     return lib;
 }
 pub fn createPSXLib(b: *std.Build) *std.Build.Step.Compile {
     return addPSXStaticLibrary(b, "ZigPSX", PSXLibFile);
 }
-pub fn addGBAExecutable(b: *std.Build, romName: []const u8, sourceFile: []const u8) *std.Build.Step.Compile {
+pub fn addPSXExecutable(b: *std.Build, romName: []const u8, sourceFile: []const u8) *std.Build.Step.Compile {
     const exe = b.addExecutable(.{
         .name = romName,
-        .root_source_file = .{ .path = sourceFile },
+        .root_source_file = b.path(sourceFile),
         .target = b.resolveTargetQuery(psx_target_query),
         .optimize = .ReleaseFast,
     });
 
-    exe.setLinkerScriptPath(.{ .path = PSXLinkerScript });
+    exe.setLinkerScriptPath(b.path(PSXLinkerScript));
     const objcopy_step = exe.addObjCopy(.{
         .format = .bin,
     });
@@ -45,7 +45,7 @@ pub fn addGBAExecutable(b: *std.Build, romName: []const u8, sourceFile: []const 
     b.default_step.dependOn(&install_bin_step.step);
 
     const psxLib = createPSXLib(b);
-    exe.root_module.addAnonymousImport("psx", .{ .root_source_file = .{ .path = PSXLibFile } });
+    exe.root_module.addAnonymousImport("psx", .{ .root_source_file = b.path(PSXLibFile) });
     exe.linkLibrary(psxLib);
 
     b.default_step.dependOn(&exe.step);
