@@ -17,7 +17,7 @@ SECTIONS
 	. = ORIGIN(ram);
 	.text ALIGN(4) :
 	{
-		KEEP(*(.psxmain))
+	    KEEP(*(._start))
 		*(.text*)
 	} >ram
 
