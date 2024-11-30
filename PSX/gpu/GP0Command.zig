@@ -126,17 +126,18 @@ pub const EnvironmentCommands = packed struct(u29) {
         MaskBit,
     },
 };
+pub const CommandType = enum(u3) {
+    Misc,
+    PolygonPrimitive,
+    LinePrimitive,
+    RectanglePrimmitive,
+    VRAM2VRAMBlit,
+    CPU2VRAMBlit,
+    VRAM2CPUBlit,
+    Environment,
+};
 pub const GP0Command = packed struct(u32) {
-    commnad_type: enum(u3) {
-        Misc,
-        PolygonPrimitive,
-        LinePrimitive,
-        RectanglePrimmitive,
-        VRAM2VRAMBlit,
-        CPU2VRAMBlit,
-        VRAM2CPUBlit,
-        Environment,
-    },
+    commnad_type: CommandType,
     command: union(u29) {
         misc: MiscCommands,
         polygon_render: PolygonRender,
