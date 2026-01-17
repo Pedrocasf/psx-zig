@@ -15,45 +15,54 @@ const psx_target_query = blk: {
     break :blk target;
 };
 pub fn addPSXStaticLibrary(b: *std.Build, libraryName: []const u8, sourceFile: []const u8) *std.Build.Step.Compile {
-    const lib = b.addStaticLibrary(.{
+    const lib = b.addLibrary(.{
         .name = libraryName,
-        .root_source_file = b.path(sourceFile),
-        .target = b.resolveTargetQuery(psx_target_query),
-        .optimize = .ReleaseSmall,
-        .single_threaded = true,
-        .strip = true,
+        .root_module = b.createModule(.{
+            .root_source_file = b.path(sourceFile),
+            .target = b.resolveTargetQuery(psx_target_query),
+            .optimize = .ReleaseFast,
+            .single_threaded = true,
+            .link_libc = false,
+            .strip = true,
+        }),
+    .   linkage = .static,
     });
-    lib.setLinkerScriptPath(b.path(PSXLinkerScript));
+    lib.setLinkerScript(.{ .cwd_relative = PSXLinkerScript});
     return lib;
 }
 pub fn createPSXLib(b: *std.Build) *std.Build.Step.Compile {
     return addPSXStaticLibrary(b, "ZigPSX", PSXLibFile);
 }
-pub fn addPSXExecutable(b: *std.Build, romName: []const u8, sourceFile: []const u8) *std.Build.Step.Compile {
+pub fn addPSXExecutable(b: *std.Build, romName: []const u8, sourceFile: []const u8 ) *std.Build.Step.Compile {
     const exe = b.addExecutable(.{
         .name = romName,
-        .root_source_file = b.path(sourceFile),
-        .target = b.resolveTargetQuery(psx_target_query),
-        .optimize = .ReleaseSmall,
-        .single_threaded = true,
-        .strip = true
+        .root_module = b.createModule(.{
+            .root_source_file = b.path(sourceFile),
+            .target = b.resolveTargetQuery(psx_target_query),
+            .optimize = .ReleaseFast,
+            .single_threaded = true,
+            .link_libc = false,
+            .strip = true,
+            }),
+        .linkage = .static,
+
     });
-    exe.setLinkerScriptPath(b.path(PSXLinkerScript));
+    exe.setLinkerScript(.{.cwd_relative = PSXLinkerScript});
     exe.verbose_cc = true;
     exe.verbose_link = true;
     const objcopy_step = exe.addObjCopy(.{
         .format = .elf,
     });
 
-    const install_bin_step = b.addInstallBinFile(objcopy_step.getOutputSource(), b.fmt("{s}.elf", .{romName}));
+    const install_bin_step = b.addInstallBinFile(objcopy_step.getOutput(), b.fmt("{s}.elf", .{romName}));
     install_bin_step.step.dependOn(&objcopy_step.step);
 
     b.default_step.dependOn(&install_bin_step.step);
 
     const psxLib = createPSXLib(b);
     exe.root_module.addAnonymousImport("ZigPSX", .{ .root_source_file = b.path(PSXLibFile) });
-    exe.linkLibrary(psxLib);
-
+    exe.root_module.linkLibrary(psxLib);
+    exe.root_module.single_threaded = true;
     b.default_step.dependOn(&exe.step);
 
     return exe;

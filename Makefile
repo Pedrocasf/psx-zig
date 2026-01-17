@@ -5,4 +5,4 @@ all:
 	cp zig.exe cdimg/
 	mkisofs -o zig.iso -V zig -sysid PLAYSTATION cdimg/
 	mkpsxiso zig.iso zig.bin /usr/local/psxsdk/share/licenses/infoeur.dat -s
-	pcsxr -nogui -psxout -cdfile zig.cue
+	#pcsxr -nogui -psxout -cdfile zig.cue
