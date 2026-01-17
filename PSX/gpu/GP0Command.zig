@@ -98,7 +98,7 @@ pub const DrawingOffset = packed struct(u24) {
 };
 pub const DrawingArea = packed struct(u24) {
     XCoord: u10,
-    YCoord: u10, // only use the first 9 bits for PSX the tenth is for 2MiB of VRAM machines
+    YCoord: u10, // only use the first.elf 9 bits for PSX the tenth is for 2MiB of VRAM machines
     _padding: u4,
 };
 pub const TextureWindow = packed struct(u24) {

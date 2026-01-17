@@ -4,7 +4,7 @@
  */
 
 MEMORY {
-    ram	(rwx) : ORIGIN = 0x00010000, LENGTH = 2M - 64K
+    ram	(rwx) : ORIGIN = 0x80010000, LENGTH = 2M - 64K
     sram (rw) : ORIGIN = 0x1f800000, LENGTH = 1K
 }
 

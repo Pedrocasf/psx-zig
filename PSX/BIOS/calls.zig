@@ -1,5 +1,6 @@
 const format = @import("std").fmt.comptimePrint;
 pub extern fn puts(str: [*:0]const u8) c_int;
+pub extern fn printf(str: [*:0]const u8) c_int;
 comptime {
     asm (ABCCalls(0x00a0, 0x00, 2, "open"));
     asm (ABCCalls(0x00a0, 0x01, 3, "lseek"));
@@ -7,6 +8,7 @@ comptime {
     asm (ABCCalls(0x00a0, 0x03, 3, "write"));
     asm (ABCCalls(0x00a0, 0x04, 1, "close"));
     asm (ABCCalls(0x00a0, 0x3E, 1, "puts"));
+    asm (ABCCalls(0x00a0, 0x3F, 1, "printf"));
 }
 pub fn ABCCalls(
     CallType: comptime_int,

@@ -1,5 +1,5 @@
 pub const Header = @import("core.zig").Header;
-pub const puts = @import("BIOS/calls.zig").puts;
+pub const printf = @import("BIOS/calls.zig").printf;
 pub const Ports = @import("gpu/ports.zig");
 pub const GP0Command = Ports.GP0Commands;
 pub const GP0Port = Ports.GPU.GP0GPUREAD;

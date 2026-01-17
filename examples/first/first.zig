@@ -8,6 +8,6 @@ pub export fn __start() void {
 
     while (true) {
 
-        old = PSX.puts("Hello");
+        old = PSX.printf("Hello");
     }
 }
