@@ -50,20 +50,20 @@ pub fn addPSXExecutable(b: *std.Build, romName: []const u8, sourceFile: []const 
     exe.setLinkerScript(.{.cwd_relative = PSXLinkerScript});
     exe.verbose_cc = true;
     exe.verbose_link = true;
-    const objcopy_step = exe.addObjCopy(.{
-        .format = .elf,
-    });
+    //const objcopy_step = exe.addObjCopy(.{
+    //    .format = .elf,
+    //});
 
-    const install_bin_step = b.addInstallBinFile(objcopy_step.getOutput(), b.fmt("{s}.elf", .{romName}));
-    install_bin_step.step.dependOn(&objcopy_step.step);
+    //const install_bin_step = b.addInstallBinFile(objcopy_step.getOutput(), b.fmt("{s}.elf", .{romName}));
+    //install_bin_step.step.dependOn(&objcopy_step.step);
 
-    b.default_step.dependOn(&install_bin_step.step);
+    //b.default_step.dependOn(&install_bin_step.step);
 
     const psxLib = createPSXLib(b);
     exe.root_module.addAnonymousImport("ZigPSX", .{ .root_source_file = b.path(PSXLibFile) });
     exe.root_module.linkLibrary(psxLib);
     exe.root_module.single_threaded = true;
     b.default_step.dependOn(&exe.step);
-
+    b.installArtifact(exe);
     return exe;
 }
